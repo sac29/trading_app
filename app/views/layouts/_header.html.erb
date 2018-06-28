@@ -1,0 +1,23 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">My Trading Application</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <% if session[:user_id] %>
+      <li><a href="/publicfeed">Public Stock Feed</a></li>
+      <% end %>
+      <% if !session[:user_id] %>
+      <li><a href="/">Login</a></li>
+      <% end %>
+      <% if session[:user_id] %>
+      <li><a href="/logout">Logout</a></li>
+      <% end %>
+    </ul>
+  </div>
+</nav>
+<br>
+<br>
+<br>
+<br>

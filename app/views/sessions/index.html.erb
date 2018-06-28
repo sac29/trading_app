@@ -1,0 +1,19 @@
+<h2>Please enter your username</h2>
+<br>
+  <form action="/sessions" method="post">
+    <div class="form-group">
+      <label for="email">Username:</label>
+      <input type="hidden" name="authenticity_token" value="<%=form_authenticity_token %>">
+      <input type="name" class="form-control" id="name" placeholder="Enter Username" name="login[username]">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+<br>
+ <% if flash[:notice] %>
+ <div class="alert alert-danger">
+  <%= flash[:notice] %>
+</div> 
+ <% end %>
+ 
+
+

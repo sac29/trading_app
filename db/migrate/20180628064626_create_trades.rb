@@ -1,6 +1,5 @@
 class CreateTrades < ActiveRecord::Migration[5.2]
   def change
-    drop_table :trades
     create_table :trades do |t|
       t.string :stock_name, :null => :false
       t.bigint :user_id, :null => :false

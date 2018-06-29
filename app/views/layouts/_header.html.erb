@@ -4,21 +4,18 @@
       <a class="navbar-brand" href="/">My Trading Application</a>
     </div>
     <ul class="nav navbar-nav">
-    <% if session[:user_id] %>
+    <% if current_user %>
       <li><a href="/trades">Home</a></li>
-    <%end %>
-    <% if session[:user_id] %>
       <li><a href="/publicfeed">Public Stock Feed</a></li>
-      <% end %>
-      <% if !session[:user_id] %>
+      <li><a href="/logout">Logout</a></li>
+      <% else %>
       <li><a href="/">Login</a></li>
       <% end %>
-      <% if session[:user_id] %>
-      <li><a href="/logout">Logout</a></li>
-      <% end %>
+      
     </ul>
   </div>
 </nav>
+<!-- TODO: do not use br ever to create vertical space, use padding/margin -->
 <br>
 <br>
 <br>

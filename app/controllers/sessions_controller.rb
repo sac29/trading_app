@@ -1,8 +1,11 @@
 class SessionsController < ApplicationController
     layout "application"
-      def index
-          
+
+    before_action :require_login, only: [:destroy]
+      
+      def index  
       end
+
       
       def create
         if login_params[:username]!=''
@@ -11,10 +14,12 @@ class SessionsController < ApplicationController
                session[:user_id]=user.id
                redirect_to '/trades'
             else
+               flash[:notice]  = 'Please login' 
                redirect_to '/'
             end
            
         else
+            flash[:notice]  = 'Please login' 
             redirect_to '/'  
         end
 
@@ -28,8 +33,8 @@ class SessionsController < ApplicationController
       
 
       private
-         def login_params
-            params.require(:login).permit(:username)
-         end
+    def login_params
+       params.require(:login).permit(:username)
+    end
 
 end

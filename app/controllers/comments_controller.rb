@@ -1,22 +1,19 @@
 class CommentsController < ApplicationController
-  
-      def create
+    layout "application"
 
-            user_session = session[:user_id]
-            if user_session
+    before_action :require_login
+
+      def create
+                user_id = session[:user_id]
                 trade_id = params[:trade_id]
                 comment = params[:comment]
-                check_comment = Comment.new(user_id: user_session, trade_id: trade_id, user_comment: comment)
-                if check_comment.valid?
-                    check_comment.save
+                comment = Comment.new(user_id: user_id, trade_id: trade_id, user_comment: comment)
+                if comment.valid?
+                    comment.save
                 else
-                    flash[:notice]="Please write a comment"
+                    flash[:notice] = "Please write a comment"
                 end
-                redirect_to '/publicfeed'   
-            else
-                redirect_to '/'
-                flash[:notice] = "Please login to comment"
-            end
+                redirect_to '/publicfeed'
 
       end   
 

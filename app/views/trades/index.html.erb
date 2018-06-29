@@ -46,7 +46,7 @@
       <th>Price of Stock</th>
       <th>No of shares</th>
       <th>Bought/Sold</th>
-      <th>Date of Purchase</th>
+      <th>Date</th>
     </tr>
   </thead>
   <tbody>
@@ -56,10 +56,10 @@
       <td><%=  trade.stock_price %></td>
       <td><%=  trade.no_of_shares %></td>
       <td> <%=  trade.order_type %>  </td>
-      <td> <%=  trade.created_at %>  </td>
+      <td> <%=  trade.created_at.to_date %>  </td>
     </tr>
     <% end%>
     
   </tbody>
 </table>
-
+<br>

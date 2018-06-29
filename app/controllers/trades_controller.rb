@@ -5,7 +5,7 @@ class TradesController < ApplicationController
         if session[:user_id]
         @user_trades = Trade.where(user_id: session[:user_id]).order(created_at: :desc) 
         else
-            flash[:notice]  = 'Please login to view public feed' 
+            flash[:notice]  = 'Please login to view your feed' 
             redirect_to '/'
         end
 
@@ -38,7 +38,7 @@ class TradesController < ApplicationController
     
      def get_public_feed
         if session[:user_id]
-            @public_feed = Trade.joins(:user).select("trades.*, users.*").order(created_at: :desc)
+            @public_feed = Trade.all.order(created_at: :desc)
         else
            flash[:notice]  = 'Please login to view public feed' 
            redirect_to '/'

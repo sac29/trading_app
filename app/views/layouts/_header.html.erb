@@ -4,8 +4,10 @@
       <a class="navbar-brand" href="#">My Trading Application</a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a href="/">Home</a></li>
-      <% if session[:user_id] %>
+    <% if !session[:user_id] %>
+      <li><a href="/trades">Home</a></li>
+    <%end %>
+    <% if session[:user_id] %>
       <li><a href="/publicfeed">Public Stock Feed</a></li>
       <% end %>
       <% if !session[:user_id] %>

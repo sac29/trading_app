@@ -1,34 +1,30 @@
-<table class="table table-hover" class="table-responsive">
-  <thead>
-    <tr>
-    <th>User Name</th>
-      <th>Stock Name</th>
-      <th>Price of Stock</th>
-      <th>No of shares</th>
-      <th>Bought/Sold</th>
-      <th>Date of Purchase/Sold</th>
-    </tr>
-  </thead>
-  <tbody>
-  <% @public_feed.each do |trade| %>
-    <tr>
-      <td><%=  trade.user.username %>
-      
-      <div class="form-group">
-      <label for="pwd">Password:</label>
-      <input type="name" class="form-control" id="comment" placeholder="Enter comment" name="comment[]">
-    </div>
-   
-    <button type="submit" class="btn btn-default">Add comment</button>
-      
-      </td>
-      <td><%=  trade.stock_name %></td>
-      <td> <%=  trade.stock_price %></td>
-      <td> <%=  trade.no_of_shares %></td>
-      <td> <%=  trade.order_type %></td>
-      <td> <%=  trade.created_at %></td>
-    </tr>
-    <% end%>
-    
-  </tbody>
-</table>
+<h1>Total Buy Sell</h1>
+
+<br>
+<% @public_feed.each do |trades| %>
+
+<div class="card">
+<div class="card">
+<div class="card-body">
+  <h4 class="card-title"><%= trades.user.username %></h4>
+  <p class="card-text">
+  <h4>  <%= trades.stock_name %> </h4>
+  <h5>
+  
+  <% if trades.order_type =='Buy' %>
+  <p style="color:MediumSeaGreen;"> Bought  @<%= trades.stock_price %> </p>
+   <%  else %>
+  <p style="color:Tomato;"> Sold  @<%= trades.stock_price %>
+  <% end %>
+  
+  </p>
+  </p>
+  <div class="form-group">
+  <input type="name" class="form-control" id="comment" placeholder="Enter your comment" name="comments[user_comment]">
+  </div>
+  <button type="button" class="btn">Comment</button>
+</div>
+</div>
+
+<hr>
+<% end %>

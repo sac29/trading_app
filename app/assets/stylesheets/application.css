@@ -21,4 +21,12 @@
     background-color:black;
     color: white;
     text-align: center;
+
+}.navbar-padding{
+    margin-top: 70px;
+  }
+
+body {
+    padding-top: 10px;
+    padding-bottom: 20px;
 }

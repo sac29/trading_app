@@ -1,22 +1,22 @@
+
+<div class="navbar-padding">
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="/">My Trading Application</a>
     </div>
     <ul class="nav navbar-nav">
-    <% if current_user %>
-      <li><a href="/trades">Home</a></li>
-      <li><a href="/publicfeed">Public Stock Feed</a></li>
-      <li><a href="/logout">Logout</a></li>
+      <% if current_user %>
+        <li><a href="/trades">Home</a></li>
+        <li><a href="/publicfeed">Public Stock Feed</a></li>
+        <li><a href="/logout">Logout</a></li>
       <% else %>
-      <li><a href="/">Login</a></li>
+        <li><a href="/">Login</a></li>
       <% end %>
-      
+
     </ul>
   </div>
 </nav>
+</div>
 <!-- TODO: do not use br ever to create vertical space, use padding/margin -->
-<br>
-<br>
-<br>
-<br>
+<!--completed -->

@@ -7,5 +7,6 @@ Rails.application.routes.draw do
   get '/publicfeed' => 'trades#get_public_feed'
   get '/logout' => 'sessions#destroy'
   post '/comments' => 'comments#create'
+  get '/next' => 'trades#next'
 
 end

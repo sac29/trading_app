@@ -1,39 +1,52 @@
+<% content_for :title, "Public feed"  %>
+
 <h1>Total Buy Sell</h1>
 
-<br>
 <% @public_feed.each do |trades| %>
 
 
-<div class="card">
-<div class="card-body">
-  <h4 class="card-title"><%= trades.user.username %></h4>
-  <p class="card-text">
-  <h4>  <%= trades.stock_name %> </h4>
-  <% if trades.order_type =='Buy' %>
-  <p style="color:MediumSeaGreen;"> Bought  @<%= trades.stock_price %> </p>
-   <%  else %>
-  <p style="color:Tomato;"> Sold  @<%= trades.stock_price %></p>
-  <% end %>
-  <%= trades.created_at.to_date %>
-  </p>
-
-  <form action="/comments" method = "post">
-   <input type="hidden" name="authenticity_token" value="<%=form_authenticity_token %>">
-    <div class="form-group">
-  <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter your comment">
-  </div>
-  <button type="submit" name="trade_id" class="btn" value="<%= trades.id %>">Comment</button>
-  </form>
-  <br>
-     <!-- TODO: optimize for n+1 queries -->
-     <% trades.comments.each do |comment| %>
-          <div class="row">
-            <div class="col-sm-2">@<%= comment.user.username %></div>
-            <div class="col-sm-10"><%= comment.user_comment %></div>
-          </div>
-   <%  end %>
-</div>
-<hr>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title"><%= trades.user.username %></h4>
+      <p class="card-text">
+      <h4>  <%= trades.stock_name %> </h4>
+      <% if trades.order_type == 'Buy' %>
+        <p style="color:MediumSeaGreen;"> Bought @<%= trades.stock_price %> </p>
+      <% else %>
+        <p style="color:Tomato;"> Sold @<%= trades.stock_price %></p>
+      <% end %>
+      <%= trades.created_at.to_date %>
+      </p>
+      <% if current_user %>
+      <form action="/comments" method="post">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+        <div class="form-group">
+          <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter your comment">
+        </div>
+        <button type="submit" name="trade_id" class="btn" value="<%= trades.id %>">Comment</button>
+      </form>
+        <%end %>
+      <br>
+      <!-- TODO: optimize for n+1 queries -->
+      <% trades.comments.each do |comment| %>
+        <div class="row">
+          <div class="col-sm-2">@<%= comment.user.username %></div>
+          <div class="col-sm-10"><%= comment.user_comment %></div>
+        </div>
+      <% end %>
+    </div>
+    <hr>
 
 <% end %>
+  <% params[:limit] = params[:limit].to_i > 0 ? params[:limit].to_i : 5 %>
+  <% params[:limit] = params[:limit].to_i > 0 ? params[:limit].to_i : 0 %>
+<ul class="pager">
+<%= @trades_size %>
+  <li>
+    <a href="?from=<%= params[:from].to_i-params[:limit].to_i%>&limit=<%= params.has_key?(:limit) ? params[:limit].to_i : 5 %>">Previous</a>
+  </li>
+  <li>
+    <a href="?from=<%= params[:from].to_i+params[:limit].to_i%>&limit=<%= params.has_key?(:limit) ? params[:limit].to_i : 5 %>">Next</a>
+  </li>
+</ul>
 

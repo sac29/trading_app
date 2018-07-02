@@ -10,6 +10,7 @@
         <li><a href="/trades">Home</a></li>
         <li><a href="/publicfeed">Public Stock Feed</a></li>
         <li><a href="/logout">Logout</a></li>
+        <li><a>Welcome <%= current_user.username %></a></li>
       <% else %>
         <li><a href="/">Login</a></li>
       <% end %>

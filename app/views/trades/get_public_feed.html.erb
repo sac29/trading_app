@@ -1,52 +1,132 @@
-<% content_for :title, "Public feed"  %>
+<% content_for :title, "Public feed" %>
 
-<h1>Total Buy Sell</h1>
+<h2>Total Buy Sell</h2>
 
-<% @public_feed.each do |trades| %>
+<% @public_feed.each do |trade| %>
 
 
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title"><%= trades.user.username %></h4>
+      <h4 class="card-title"><%= trade.user.username %></h4>
       <p class="card-text">
-      <h4>  <%= trades.stock_name %> </h4>
-      <% if trades.order_type == 'Buy' %>
-        <p style="color:MediumSeaGreen;"> Bought @<%= trades.stock_price %> </p>
+      <h4>  <%= trade.stock_name %> </h4>
+      <% if trade.order_type == 'Buy' %>
+        <p style="color:MediumSeaGreen;"> Bought @<%= trade.stock_price %> </p>
       <% else %>
-        <p style="color:Tomato;"> Sold @<%= trades.stock_price %></p>
+        <p style="color:Tomato;"> Sold @<%= trade.stock_price %></p>
       <% end %>
-      <%= trades.created_at.to_date %>
+      <%= trade.created_at.to_date %>
       </p>
-      <% if current_user %>
-      <form action="/comments" method="post">
-        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-        <div class="form-group">
-          <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter your comment">
+
+
+      <p>
+        <% if current_user.present?
+             you = trade.likes.find_by(user_id: current_user.id).present?
+             like_other = trade.likes.where.not(user_id: [current_user.id])
+
+           else
+             you = false
+             like_other = trade.likes.all
+           end
+
+           likes_count = like_other.count
+           like_string = ''
+
+
+           if you && likes_count == 0
+             like_string = 'You liked this'
+           elsif you && likes_count == 1
+             like_string = 'You and ' + like_other[0].user.username.to_s + ' like this '
+           elsif you && likes_count == 2
+             like_string = 'You , ' + like_other[0].user.username.to_s + ' and ' + like_other[1].user.username.to_s + ' like this '
+           elsif you && likes_count > 2
+             like_string = 'You ,' + like_other[0].user.username.to_s + ' and ' + (likes_count - 1).to_s + ' others liked this '
+           elsif !you && likes_count == 1
+             like_string = like_other[0].user.username.to_s + ' like this '
+           elsif !you && likes_count == 2
+             like_string == like_other[0].user.username.to_s + ' and ' + like_other[1].user.username.to_s + ' like this '
+           elsif !you && likes_count > 2
+             like_string = like_other[0].user.username.to_s + ', ' + like_other[1].user.username.to_s + ' and ' + (likes_count - 2).to_s + ' others liked this'
+           elsif !you && likes_count == 0
+             like_string = ''
+           end
+        %>
+        <% if you %>
+        <div class="row">
+          <div class="col-sm-1">
+            <form action="/like" method="get">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <button type="submit" name="trade_id" class="btn btn-default btn-sm" value="<%= trade.id %>">
+                Unlike
+              </button>
+            </form>
+          </div>
+          <div class="col-sm-11"><%= like_string %></div>
         </div>
-        <button type="submit" name="trade_id" class="btn" value="<%= trades.id %>">Comment</button>
-      </form>
-        <%end %>
+      <% else %>
+
+        <div class="row">
+          <div class="col-sm-1">
+            <form action="/like" method="post">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <button type="submit" name="trade_id" class="btn btn-default btn-sm" value="<%= trade.id %>">
+                Like
+              </button>
+            </form>
+          </div>
+          <div class="col-sm-11"><%= like_string %></div>
+        </div>
+
+      <% end %>
+
+
+
+      <br>
+      <% if flash[:notice] && current_user.id %>
+        <div class="alert alert-success">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+      </p>
+
+      <% if current_user %>
+        <form action="/comments" method="post">
+          <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+          <div class="form-group">
+            <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter your comment">
+          </div>
+          <button type="submit" name="trade_id" class="btn" value="<%= trade.id %>">Comment</button>
+        </form>
+      <% end %>
       <br>
       <!-- TODO: optimize for n+1 queries -->
-      <% trades.comments.each do |comment| %>
+      <% trade.comments.each do |comment| %>
         <div class="row">
           <div class="col-sm-2">@<%= comment.user.username %></div>
-          <div class="col-sm-10"><%= comment.user_comment %></div>
+          <div class="col-sm-8"><%= comment.user_comment %></div>
+          <div class="col-sm-2">
+            <% if current_user.present? && (current_user.id == comment.user.id || current_user.id == trade.user.id) %>
+              <%= button_to "Delete Comment", {:controller => :comments,
+                                               :action => 'destroy', :id => comment.id}, :method => :delete %>
+            <% end %>
+
+          </div>
         </div>
+
       <% end %>
     </div>
     <hr>
 
 <% end %>
-  <% params[:limit] = params[:limit].to_i > 0 ? params[:limit].to_i : 5 %>
-  <% params[:limit] = params[:limit].to_i > 0 ? params[:limit].to_i : 0 %>
+<% params[:limit] = params[:limit].to_i > 0 ? params[:limit].to_i : 5 %>
+<% params[:from] = params[:from].to_i > 0 ? params[:from].to_i : 0 %>
+
 <ul class="pager">
-<%= @trades_size %>
   <li>
-    <a href="?from=<%= params[:from].to_i-params[:limit].to_i%>&limit=<%= params.has_key?(:limit) ? params[:limit].to_i : 5 %>">Previous</a>
+    <a class="btn <%= 'disabled' if params[:from].to_i - params[:limit].to_i < 0 %>" role="button" href="?from=<%= params[:from].to_i - params[:limit].to_i %>&limit=<%= params.has_key?(:limit) ? params[:limit].to_i : 5 %>">Previous</a>
   </li>
   <li>
-    <a href="?from=<%= params[:from].to_i+params[:limit].to_i%>&limit=<%= params.has_key?(:limit) ? params[:limit].to_i : 5 %>">Next</a>
+    <a class="btn <%= 'disabled' if params[:from].to_i + params[:limit].to_i > @trades_size %>"  role="button" href="?from=<%= params[:from].to_i + params[:limit].to_i %>&limit=<%= params.has_key?(:limit) ? params[:limit].to_i : 5 %>">Next</a>
   </li>
 </ul>
 

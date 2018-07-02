@@ -17,4 +17,17 @@ class CommentsController < ApplicationController
 
   end
 
+  def destroy
+    comment_id = params[:id]
+    user_id = current_user.id
+    comment = Comment.includes(:user).includes(:trade =>  :user).where(id: comment_id).first
+    if current_user.id == comment.user.id || current_user.id == comment.trade.user.id
+      comment.destroy
+      flash[:delete_comment] = "Comment deleted"
+    else
+      flash[:delete_comment] = "You can only delete your comments or comments on your post"
+    end
+    redirect_to '/publicfeed'
+  end
+
 end

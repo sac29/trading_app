@@ -8,5 +8,8 @@ Rails.application.routes.draw do
   get '/logout' => 'sessions#destroy'
   post '/comments' => 'comments#create'
   get '/next' => 'trades#next'
+  post '/like' => 'likes#create'
+  get '/like' => 'likes#destroy'
+  delete '/delete' => 'comments#destroy'
 
 end

@@ -30,18 +30,13 @@ class TradesController < ApplicationController
     # TODO: add pagination, using from and size
     #@public_feed = Trade.all.order(created_at: :desc)
     offset = params.has_key?(:from) && params[:from].to_i > 0 ? params[:from].to_i : 0
-    limit = params.has_key?(:from) && params[:limit].to_i > 0 ? params[:limit].to_i : 5
-    public_feed = Trade.order(created_at: :desc).includes(:user, :comments, :likes).all
+    limit = params.has_key?(:limit) && params[:limit].to_i > 0 ? params[:limit].to_i : 5
+    public_feed = Trade.order(created_at: :desc).includes(:user, :comments => :user, :likes => :user).all
     @public_feed = public_feed.limit(limit).offset(offset)
     @trades_size = public_feed.size
   end
 
   private
-
-  def set_trade
-    @trade = Trade.find(params[:trade_id])
-  end
-
 
   def trades_params
     params.require(:trades).permit(:stock_name, :stock_price, :no_of_shares, :order_type)

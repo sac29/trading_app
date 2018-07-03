@@ -44,15 +44,16 @@
            elsif !you && likes_count == 1
              like_string = like_other[0].user.username.to_s + ' like this '
            elsif !you && likes_count == 2
-             like_string == like_other[0].user.username.to_s + ' and ' + like_other[1].user.username.to_s + ' like this '
+             like_string = like_other[0].user.username.to_s + ' and ' + like_other[1].user.username.to_s + ' like this '
            elsif !you && likes_count > 2
              like_string = like_other[0].user.username.to_s + ', ' + like_other[1].user.username.to_s + ' and ' + (likes_count - 2).to_s + ' others liked this'
            elsif !you && likes_count == 0
              like_string = ''
            end
         %>
-        <% if you %>
-        <div class="row">
+
+      <div class="row">
+        <% if current_user.present? && you %>
           <div class="col-sm-1">
             <form action="/like" method="get">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
@@ -61,11 +62,8 @@
               </button>
             </form>
           </div>
-          <div class="col-sm-11"><%= like_string %></div>
-        </div>
-      <% else %>
 
-        <div class="row">
+        <% else %>
           <div class="col-sm-1">
             <form action="/like" method="post">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
@@ -74,19 +72,11 @@
               </button>
             </form>
           </div>
-          <div class="col-sm-11"><%= like_string %></div>
-        </div>
-
-      <% end %>
-
-
+        <%  end %>
+        <div class="col-sm-11"><%= like_string %></div>
+      </div>
 
       <br>
-      <% if flash[:notice] && current_user.id %>
-        <div class="alert alert-success">
-          <%= flash[:notice] %>
-        </div>
-      <% end %>
       </p>
 
       <% if current_user %>
